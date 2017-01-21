@@ -3,6 +3,7 @@ extern crate gdb;
 extern crate error_chain;
 extern crate toml;
 extern crate rustc_serialize;
+extern crate gtk;
 
 #[macro_use]
 mod error;
@@ -10,16 +11,23 @@ mod consts;
 mod tas;
 mod config;
 mod pidof;
+mod gui;
 
 use std::io::BufRead;
 
 use tas::Tas;
 use config::Config;
+use gui::Gui;
 
 fn main() {
+    let gui = handle_err!(Gui::new());
+    gui.main();
+    println!("fin");
+    return;
     // set gdb path
     if cfg!(windows) {
         ::std::env::set_var("GDB_BINARY", "./gdb.exe");
+
     }
     println!("Read config...");
     let config = Config::load("Config.toml");
