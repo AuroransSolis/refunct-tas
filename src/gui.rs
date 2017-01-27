@@ -10,8 +10,9 @@ use gtk::{
     WindowType,
     ScrolledWindow,
     Label,
-    Grid
+    Grid,
 };
+use gdk::RGBA;
 
 pub struct Gui {
     keys: Rc<Mutex<Vec<[bool; 5]>>>,
@@ -34,23 +35,26 @@ impl Gui {
         grid.attach(&Label::new(Some("↓")), 2, 0, 1, 1);
         grid.attach(&Label::new(Some("←")), 3, 0, 1, 1);
         grid.attach(&Label::new(Some("→")), 4, 0, 1, 1);
-        grid.attach(&Label::new(Some("踊")), 5, 0, 1, 1);
+        grid.attach(&Label::new(Some("↷")), 5, 0, 1, 1);
         for i in 1..10 {
             keys.lock().unwrap().push([false, false, false, false, false]);
             grid.attach(&Label::new(Some(&format!("{}", i))), 0, i, 1, 1);
             for j in 1..6 {
                 let button = ColorButton::new();
                 let keys = keys.clone();
-                button.connect_clicked(move |self| {
-                    let lock = keys.lock().unwrap();
-                    let mut enabled = &lock[i as usize-1][j as usize - 1];
-                    *enabled ^= *enabled;
-                    if enabled {
-                        self.set_rgba(RGBA { red: 0., green: 1., blue: 0., alpha: 0. });
-                    } else {
-                        self.set_rgba(RGBA { red: 1., green: 1., blue: 1., alpha: 0. });
+                button.connect_clicked(move |this| {
+                    let mut lock = keys.lock().unwrap();
+                    {
+                        let mut enabled = &mut lock[i as usize-1][j as usize - 1];
+                        *enabled ^= *enabled;
+                        if *enabled {
+                            this.set_rgba(&RGBA { red: 0., green: 1., blue: 0., alpha: 0. });
+                        } else {
+                            this.set_rgba(&RGBA { red: 1., green: 1., blue: 1., alpha: 0. });
+                        }
                     }
-                    println!("{:?}", *keys.lock().unwrap());
+                    println!("{:?}", lock);
+
                 });
                 grid.attach(&button, j, i, 1, 1);
             }

@@ -4,6 +4,7 @@ extern crate error_chain;
 extern crate toml;
 extern crate rustc_serialize;
 extern crate gtk;
+extern crate gdk;
 
 #[macro_use]
 mod error;
@@ -27,7 +28,6 @@ fn main() {
     // set gdb path
     if cfg!(windows) {
         ::std::env::set_var("GDB_BINARY", "./gdb.exe");
-
     }
     println!("Read config...");
     let config = Config::load("Config.toml");

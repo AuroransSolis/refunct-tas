@@ -10,6 +10,7 @@ gdb = { git = "https://github.com/oberien/rust-gdb" }
 error-chain = "0.7.2"
 toml = "0.2.1"
 rustc-serialize = "0.3.22"
+gdk = "0.5.1"
 
 [dependencies.gtk]
 version = "0.1.1"
