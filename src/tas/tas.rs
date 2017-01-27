@@ -1,52 +1,40 @@
-#[cfg(unix)]
-use gdb::Debugger;
-#[cfg(windows)]
-use tas::dbg::Debugger;
-
 use error::*;
 use config::Ingame;
 use consts;
 use tas::parser::Frame;
+use tas::dbg::{Debugger, Dbg};
 
 pub struct Tas {
     dbg: Debugger,
+    fslateapplication: Debugger::AddrIdent,
+    tickbp: Debugger::BpIdent,
+    newgamebp: Debugger::BpIdent,
 }
 
 impl Tas {
     pub fn new(pid: u32) -> Result<Tas> {
-        let dbg = Debugger::start().chain_err(|| "Cannot start gdb")?;
-        let mut this = Tas {
+        let dbg = Debugger::start(pid).chain_err(|| "Cannot start gdb")?;
+        let slatebp = self.dbg.breakpoint_set(consts::FSLATEAPPLICATION_TICK)?;
+        self.dbg.cont()?;
+        let fslateapplication = self.dbg.save_rdi()?;
+        self.dbg.breakpoint_disable(&slatebp)?;
+        let tickbp = self.dbg.breakpoint_set(consts::FENGINELOOP_TICK_AFTER_UPDATETIME)?;
+        let newgamebp = self.dbg.breakpoint_set(consts::AMYCHARACTER_EXECFORCEDUNCROUCH)?;
+        self.dbg.breakpoint_disable(&newgamebp)?;
+        self.dbg.breakpoint_disable(&tickbp)?;
+        Ok(Tas {
             dbg: dbg,
-        };
-        this.send_cmd(&format!("attach {}", pid))?;
-        Ok(this)
-    }
-
-    fn send_cmd(&mut self, cmd: &str) -> Result<()> {
-        self.dbg.send_cmd_raw(&cmd)
-            .chain_err(|| "Cannot send_cmd").map(|_| ())
-    }
-
-    pub fn init(&mut self) -> Result<()> {
-        let break_slate = format!("break *{:#}", consts::FSLATEAPPLICATION_TICK);
-        self.send_cmd(&break_slate)?;
-        self.send_cmd("call $slatetickbp = $bpnum")?;
-        self.send_cmd("c")?;
-        self.send_cmd("call $fslateapplication = $rdi")?;
-        self.send_cmd("del $slatetickbp")?;
-        let break_tick = format!("break *{:#}", consts::FENGINELOOP_TICK_AFTER_UPDATETIME);
-        self.send_cmd(&break_tick)?;
-        self.send_cmd("call $tickbp = $bpnum")?;
-        self.send_cmd(&format!("break *{:#}", consts::AMYCHARACTER_EXECFORCEDUNCROUCH))?;
-        self.send_cmd("call $newgamebp = $bpnum")?;
-        self.send_cmd("disable $newgamebp")?;
-        self.send_cmd("disable $tickbp").map(|_| ())
+            fslateapplication: fslateapplication,
+            tickbp: tickbp,
+            newgamebp: newgamebp,
+        })
     }
 
     pub fn step(&mut self) -> Result<()> {
         // set delta float for smooth fps
-        self.send_cmd(&format!("set {{double}} {:#} = {}", consts::APP_DELTATIME, 1f64 / 60f64))?;
-        self.send_cmd("c").map(|_| ())
+        self.dbg.send_cmd(&format!("set {{double}} {:#} = {}", consts::APP_DELTATIME, 1f64 / 60f64))?;
+        self.dbg.cont()?;
+        Ok(())
     }
 
     pub fn press_key(&mut self, key: char) -> Result<()> {

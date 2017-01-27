@@ -10,7 +10,6 @@ pub struct Debugger {
 
 impl Dbg for Debugger {
     type BpIdent = String;
-    type AddrIdent = String;
 
     fn new(pid: u32) -> Result<Debugger> {
         let mut child = process::Command::new("./cdb.exe")
@@ -55,13 +54,8 @@ impl Dbg for Debugger {
         self.send_cmd(&format!("bc {}", bp))
     }
 
-    fn cont(&mut self) -> Result<String> {
+    fn continue(&mut self) -> Result<String> {
         self.send_cmd("g")
-    }
-
-    fn save_rdi(&mut self) -> Result<AddrIdent> {
-        // TODO
-        unimplemented!();
     }
 }
 

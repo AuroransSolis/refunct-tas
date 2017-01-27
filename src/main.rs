@@ -38,8 +38,6 @@ fn main() {
     println!("Create tas...");
     let mut tas = Tas::new(pid).unwrap();
     println!("TaS created successfully.");
-    handle_err!(tas.init());
-    println!("TaS initiated successfully.");
     println!("Wait for click on 'New Game'...");
     handle_err!(tas.wait_for_new_game());
     println!("New Game detected. Starting TaS execution");
