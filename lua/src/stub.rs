@@ -91,6 +91,21 @@ impl LuaInterface for Stub {
         Response::Result(())
     }
 
+    fn start_recording_replay(&mut self, name: String) -> Response<()> {
+        println!("Start recording Replay {:?}", name);
+        Response::Result(())
+    }
+
+    fn stop_recording_replay(&mut self) -> Response<()> {
+        println!("Stop recording Replay");
+        Response::Result(())
+    }
+
+    fn play_replay(&mut self, name: String) -> Response<()> {
+        println!("Play Replay {:?}", name);
+        Response::Result(())
+    }
+
     fn print(&mut self, s: String) -> Response<()> {
         println!("print: {:?}", s);
         Response::Result(())

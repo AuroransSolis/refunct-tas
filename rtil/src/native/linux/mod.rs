@@ -25,8 +25,14 @@ pub(in native) static mut ACONTROLLER_GETCONTROLROTATION: usize = 0;
 pub(in native) static mut UENGINE_UPDATETIMEANDHANDLEMAXTICKRATE: usize = 0;
 pub(in native) static mut AMYCHARACTER_TICK: usize = 0;
 pub(in native) static mut FAPP_DELTATIME: usize = 0;
+pub(in native) static mut FMEMORY_MALLOC: usize = 0;
+pub(in native) static mut FMEMORY_FREE: usize = 0;
+pub(in native) static mut GWORLD: usize = 0x50663b8;
+pub(in native) static mut UGAMEINSTANCE_STARTRECORDINGREPLAY: usize = 0;
+pub(in native) static mut UGAMEINSTANCE_STOPRECORDINGREPLAY: usize = 0;
+pub(in native) static mut UGAMEINSTANCE_PLAYREPLAY: usize = 0;
 
-const NAMES: [&str; 9] = [
+const NAMES: [&str; 14] = [
     "^AMyCharacter::ForcedUnCrouch()",
     "^FSlateApplication::Tick()",
     "^FSlateApplication::OnKeyDown(int, unsigned int, bool)",
@@ -36,6 +42,11 @@ const NAMES: [&str; 9] = [
     "^UEngine::UpdateTimeAndHandleMaxTickRate()",
     "^AMyCharacter::Tick(float)",
     "^FApp::DeltaTime",
+    "FMemory::Malloc",
+    "FMemory::Free",
+    "UGameInstance::StartRecordingReplay",
+    "UGameInstance::StopRecordingReplay",
+    "UGameInstance::PlayReplay",
 ];
 
 pub(in native) fn init() {
@@ -70,6 +81,16 @@ pub(in native) fn init() {
         log!("found AMyCharacter::Tick: {:#x}", AMYCHARACTER_TICK);
         FAPP_DELTATIME = *addrs.get(NAMES[8]).unwrap();
         log!("found FApp::DeltaTime: {:#x}", FAPP_DELTATIME);
+        FMEMORY_MALLOC = *addrs.get(NAMES[9]).unwrap();
+        log!("found {}: {:#x}", NAMES[9], FMEMORY_MALLOC);
+        FMEMORY_FREE = *addrs.get(NAMES[10]).unwrap();
+        log!("found {}: {:#x}", NAMES[10], FMEMORY_FREE);
+        UGAMEINSTANCE_STARTRECORDINGREPLAY = *addrs.get(NAMES[11]).unwrap();
+        log!("found {}: {:#x}", NAMES[11], UGAMEINSTANCE_STARTRECORDINGREPLAY);
+        UGAMEINSTANCE_STOPRECORDINGREPLAY = *addrs.get(NAMES[12]).unwrap();
+        log!("found {}: {:#x}", NAMES[12], UGAMEINSTANCE_STOPRECORDINGREPLAY);
+        UGAMEINSTANCE_PLAYREPLAY = *addrs.get(NAMES[13]).unwrap();
+        log!("found {}: {:#x}", NAMES[13], UGAMEINSTANCE_PLAYREPLAY);
     }
 }
 

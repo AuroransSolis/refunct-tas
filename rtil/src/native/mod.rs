@@ -7,6 +7,9 @@ mod newgame;
 mod slateapp;
 mod tick;
 mod app;
+mod memory;
+mod world;
+mod gameinstance;
 
 #[cfg(unix)] use self::linux::*;
 #[cfg(windows)] use self::windows::*;
@@ -17,6 +20,9 @@ pub use self::character::AMyCharacter;
 pub use self::controller::AController;
 pub use self::slateapp::FSlateApplication;
 pub use self::app::FApp;
+pub use self::memory::FMemory;
+pub use self::world::UWorld;
+pub use self::gameinstance::UGameInstance;
 
 pub fn init() {
     #[cfg(windows)] windows::init();
