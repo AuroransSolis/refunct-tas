@@ -65,15 +65,21 @@ fn handle(event: UeToLua) {
                 panic!()
             }
             evt @ LuaToUe::PressKey(_) | evt @ LuaToUe::ReleaseKey(_) | evt @ LuaToUe::MoveMouse(..) => {
-                // Release STATE lock, as this can trigger a new game,
+                // Release STATE lock, as events can trigger a new game,
                 // which needs to acquire the lock.
                 drop(state);
+                log!("{:?}", evt);
                 match evt {
-                    LuaToUe::PressKey(key) => FSlateApplication::press_key(key),
+                    LuaToUe::PressKey(key) => {
+                        log!("press_key");
+                        FSlateApplication::press_key(key);
+                        log!("pk done");
+                    },
                     LuaToUe::ReleaseKey(key) => FSlateApplication::release_key(key),
                     LuaToUe::MoveMouse(x, y) => FSlateApplication::move_mouse(x, y),
                     _ => unreachable!()
                 }
+                log!("done");
                 state = STATE.get();
             },
             LuaToUe::Resume => {

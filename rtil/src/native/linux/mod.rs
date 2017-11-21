@@ -42,11 +42,11 @@ const NAMES: [&str; 14] = [
     "^UEngine::UpdateTimeAndHandleMaxTickRate()",
     "^AMyCharacter::Tick(float)",
     "^FApp::DeltaTime",
-    "FMemory::Malloc",
-    "FMemory::Free",
-    "UGameInstance::StartRecordingReplay",
-    "UGameInstance::StopRecordingReplay",
-    "UGameInstance::PlayReplay",
+    "^FMemory::Malloc(unsigned long, unsigned int)",
+    "^FMemory::Free(void*)",
+    "^UGameInstance::StartRecordingReplay(FString const&, FString const&, TArray<FString, FDefaultAllocator> const&)",
+    "^UGameInstance::StopRecordingReplay()",
+    "^UGameInstance::PlayReplay(FString const&, UWorld*, TArray<FString, FDefaultAllocator> const&)",
 ];
 
 pub(in native) fn init() {

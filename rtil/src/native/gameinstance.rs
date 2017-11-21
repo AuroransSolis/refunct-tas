@@ -27,9 +27,7 @@ impl UGameInstance {
             = unsafe { ::std::mem::transmute(::native::linux::UGAMEINSTANCE_PLAYREPLAY) };
         let name = name.into();
         let additional_options: TArray<FString> = TArray::new();
-        unsafe {
-            fun(self as *const UGameInstance, &name as *const FString,
-                ptr::null(), &additional_options as *const TArray<FString>)
-        }
+        fun(self as *const UGameInstance, &name as *const FString,
+            ptr::null(), &additional_options as *const TArray<FString>)
     }
 }

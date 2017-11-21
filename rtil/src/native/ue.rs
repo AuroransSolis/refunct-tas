@@ -42,6 +42,7 @@ impl<T> TArray<T> {
     }
 }
 
+/// Null-terminated utf-32 array
 pub struct FString(TArray<char>);
 
 impl FString {
@@ -54,10 +55,11 @@ impl<'a> From<&'a str> for FString {
     fn from(s: &'a str) -> Self {
         assert_eq!(::std::mem::size_of::<char>(), 4);
         let len = s.chars().count();
-        let mut arr = TArray::with_capacity(len);
+        let mut arr = TArray::with_capacity(len + 1);
         for c in s.chars() {
             arr.push(c)
         }
+        arr.push(0 as char);
 
         FString(arr)
     }
