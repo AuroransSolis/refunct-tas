@@ -7,7 +7,7 @@ use std::collections::HashSet;
 use lua::{Lua, LuaInterface, Response, Event};
 
 use threads::{StreamToLua, LuaToStream, LuaToUe, UeToLua, Config};
-use native::{AMyCharacter, AController, FApp, UWorld};
+use native::{AMyCharacter, AController, FApp, UWorld, UGameplayStatics};
 
 struct Tas<'lua> {
     iface: Rc<RefCell<GameInterface>>,
@@ -258,6 +258,7 @@ impl LuaInterface for GameInterface {
 
     fn play_replay(&mut self, name: String) -> Response<()> {
         if self.syscall() { return Response::ExitPlease }
+//        UGameplayStatics::open_level();
         UWorld::game_instance().play_replay(name.as_str());
         Response::Result(())
     }

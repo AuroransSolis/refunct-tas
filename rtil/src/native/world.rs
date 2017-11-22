@@ -1,6 +1,7 @@
-pub struct UWorld;
-
+use native::ue::{FString, FName};
 use native::UGameInstance;
+
+pub struct UWorld;
 
 impl UWorld {
     pub fn game_instance() -> &'static UGameInstance {
@@ -10,6 +11,20 @@ impl UWorld {
             let ugameinstance_ptr = *(ugameinstance_ptr_ptr as *const *const UGameInstance);
             let ugameinstance_ref = ::std::mem::transmute(ugameinstance_ptr);
             ugameinstance_ref
+        }
+    }
+}
+
+pub struct UGameplayStatics;
+
+impl UGameplayStatics {
+    pub fn open_level() {
+        unsafe {
+            let fun: extern "C" fn(*const UWorld, FName, bool, *const FString)
+                = unsafe { ::std::mem::transmute(::native::linux::UGAMEPLAYSTATICS_OPENLEVEL) };
+            let name: FName = "/Game/Maps/World/WorldBase".into();
+            let options = FString::new();
+            fun(*(::native::linux::GWORLD as *const *const UWorld), name, true, &options as *const FString);
         }
     }
 }

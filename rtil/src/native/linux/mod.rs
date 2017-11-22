@@ -31,8 +31,10 @@ pub(in native) static mut GWORLD: usize = 0x50663b8;
 pub(in native) static mut UGAMEINSTANCE_STARTRECORDINGREPLAY: usize = 0;
 pub(in native) static mut UGAMEINSTANCE_STOPRECORDINGREPLAY: usize = 0;
 pub(in native) static mut UGAMEINSTANCE_PLAYREPLAY: usize = 0;
+pub(in native) static mut UGAMEPLAYSTATICS_OPENLEVEL: usize = 0;
+pub(in native) static mut FNAME_FNAME: usize = 0;
 
-const NAMES: [&str; 14] = [
+const NAMES: [&str; 16] = [
     "^AMyCharacter::ForcedUnCrouch()",
     "^FSlateApplication::Tick()",
     "^FSlateApplication::OnKeyDown(int, unsigned int, bool)",
@@ -47,6 +49,8 @@ const NAMES: [&str; 14] = [
     "^UGameInstance::StartRecordingReplay(FString const&, FString const&, TArray<FString, FDefaultAllocator> const&)",
     "^UGameInstance::StopRecordingReplay()",
     "^UGameInstance::PlayReplay(FString const&, UWorld*, TArray<FString, FDefaultAllocator> const&)",
+    "^UGameplayStatics::OpenLevel(UObject const*, FName, bool, FString)",
+    "^FName::complete object constructor(wchar_t const*, EFindName)",
 ];
 
 pub(in native) fn init() {
@@ -91,6 +95,10 @@ pub(in native) fn init() {
         log!("found {}: {:#x}", NAMES[12], UGAMEINSTANCE_STOPRECORDINGREPLAY);
         UGAMEINSTANCE_PLAYREPLAY = *addrs.get(NAMES[13]).unwrap();
         log!("found {}: {:#x}", NAMES[13], UGAMEINSTANCE_PLAYREPLAY);
+        UGAMEPLAYSTATICS_OPENLEVEL = *addrs.get(NAMES[14]).unwrap();
+        log!("found {}: {:#x}", NAMES[14], UGAMEPLAYSTATICS_OPENLEVEL);
+        FNAME_FNAME = *addrs.get(NAMES[15]).unwrap();
+        log!("found {}: {:#x}", NAMES[15], FNAME_FNAME);
     }
 }
 

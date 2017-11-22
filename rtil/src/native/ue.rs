@@ -49,6 +49,10 @@ impl FString {
     pub fn new() -> FString {
         FString(TArray::new())
     }
+
+    pub unsafe fn as_ptr(&self) -> *const char {
+        self.0.ptr
+    }
 }
 
 impl<'a> From<&'a str> for FString {
@@ -70,5 +74,26 @@ impl<T> Drop for TArray<T> {
         unsafe {
             FMemory::free(self.ptr as *mut ())
         }
+    }
+}
+
+#[derive(Debug)]
+#[repr(C, packed)]
+pub struct FName {
+    number: u64,
+}
+
+impl<T: Into<FString>> From<T> for FName {
+    fn from(s: T) -> FName {
+        let s = s.into();
+        let mut name = FName {
+            number: 0,
+        };
+        unsafe {
+            let fun: extern "C" fn(*mut FName, *const char, u64) -> u64
+                = unsafe { ::std::mem::transmute(::native::linux::FNAME_FNAME) };
+            fun(&mut name as *mut FName, s.as_ptr(), 1);
+        }
+        name
     }
 }

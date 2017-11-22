@@ -23,6 +23,7 @@ pub use self::app::FApp;
 pub use self::memory::FMemory;
 pub use self::world::UWorld;
 pub use self::gameinstance::UGameInstance;
+pub use self::world::UGameplayStatics;
 
 pub fn init() {
     #[cfg(windows)] windows::init();
