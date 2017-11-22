@@ -106,6 +106,11 @@ impl LuaInterface for Stub {
         Response::Result(())
     }
 
+    fn open_level(&mut self, name: String) -> Response<()> {
+        println!("Open Level: {:?}", name);
+        Response::Result(())
+    }
+
     fn print(&mut self, s: String) -> Response<()> {
         println!("print: {:?}", s);
         Response::Result(())

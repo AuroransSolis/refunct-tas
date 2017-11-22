@@ -263,6 +263,12 @@ impl LuaInterface for GameInterface {
         Response::Result(())
     }
 
+    fn open_level(&mut self, name: String) -> Response<()> {
+        if self.syscall() { return Response::ExitPlease }
+        UGameplayStatics::open_level(name);
+        Response::Result(())
+    }
+
     fn print(&mut self, s: String) -> Response<()> {
         if self.syscall() { return Response::ExitPlease }
         self.lua_stream_tx.send(LuaToStream::Print(s)).unwrap();

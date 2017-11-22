@@ -113,6 +113,7 @@ pub trait LuaInterface {
     fn start_recording_replay(&mut self, name: String) -> Response<()>;
     fn stop_recording_replay(&mut self) -> Response<()>;
     fn play_replay(&mut self, name: String) -> Response<()>;
+    fn open_level(&mut self, name: String) -> Response<()>;
 
     fn print(&mut self, s: String) -> Response<()>;
 }
@@ -205,6 +206,11 @@ impl<'lua> Lua<'lua> {
         let tas = outer.clone();
         lua.set("__play_replay", hlua::function1(move |name: String| {
             tas.borrow_mut().play_replay(name)
+        }));
+
+        let tas = outer.clone();
+        lua.set("__open_level", hlua::function1(move |name: String| {
+            tas.borrow_mut().open_level(name)
         }));
 
         let tas = outer.clone();

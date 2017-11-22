@@ -68,18 +68,12 @@ fn handle(event: UeToLua) {
                 // Release STATE lock, as events can trigger a new game,
                 // which needs to acquire the lock.
                 drop(state);
-                log!("{:?}", evt);
                 match evt {
-                    LuaToUe::PressKey(key) => {
-                        log!("press_key");
-                        FSlateApplication::press_key(key);
-                        log!("pk done");
-                    },
+                    LuaToUe::PressKey(key) => FSlateApplication::press_key(key),
                     LuaToUe::ReleaseKey(key) => FSlateApplication::release_key(key),
                     LuaToUe::MoveMouse(x, y) => FSlateApplication::move_mouse(x, y),
                     _ => unreachable!()
                 }
-                log!("done");
                 state = STATE.get();
             },
             LuaToUe::Resume => {

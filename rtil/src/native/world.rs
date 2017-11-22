@@ -18,11 +18,11 @@ impl UWorld {
 pub struct UGameplayStatics;
 
 impl UGameplayStatics {
-    pub fn open_level() {
+    pub fn open_level<S: Into<FName>>(name: S) {
         unsafe {
             let fun: extern "C" fn(*const UWorld, FName, bool, *const FString)
                 = unsafe { ::std::mem::transmute(::native::linux::UGAMEPLAYSTATICS_OPENLEVEL) };
-            let name: FName = "/Game/Maps/World/WorldBase".into();
+            let name = name.into();
             let options = FString::new();
             fun(*(::native::linux::GWORLD as *const *const UWorld), name, true, &options as *const FString);
         }
