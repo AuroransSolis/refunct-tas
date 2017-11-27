@@ -53,10 +53,10 @@ find! {
     FMEMORY_MALLOC,
     FMEMORY_FREE,
     FNAME_FNAME,
+    AMYHUD_DRAWHUD,
 }
 
 pub(in native) fn make_rw(addr: usize) {
-//    log!("make_rw: {:#x}", addr);
     let page = addr & !0xfff;
     let page = page as *mut c_void;
     let mut out = 0;
@@ -64,7 +64,6 @@ pub(in native) fn make_rw(addr: usize) {
 }
 
 pub(in native) fn make_rx(addr: usize) {
-//    log!("make_rx: {:#x}", addr);
     let page = addr & !0xfff;
     let page = page as *mut c_void;
     let mut out = 0;

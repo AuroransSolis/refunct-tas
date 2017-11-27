@@ -8,6 +8,7 @@ mod slateapp;
 mod tick;
 mod app;
 mod memory;
+mod hud;
 
 #[cfg(unix)] use self::linux::*;
 #[cfg(windows)] use self::windows::*;
@@ -19,6 +20,7 @@ pub use self::controller::AController;
 pub use self::slateapp::FSlateApplication;
 pub use self::app::FApp;
 pub use self::memory::FMemory;
+pub use self::hud::AMyHud;
 
 pub fn init() {
     #[cfg(windows)] windows::init();
@@ -26,6 +28,7 @@ pub fn init() {
     slateapp::hook();
     newgame::hook();
     tick::hook();
+    hud::hook();
     controller::hook();
     character::hook();
 }

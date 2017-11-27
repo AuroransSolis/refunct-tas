@@ -91,6 +91,18 @@ impl LuaInterface for Stub {
         Response::Result(())
     }
 
+    fn draw_line(&mut self, startx: f32, starty: f32, endx: f32, endy: f32, color: (f32, f32, f32, f32), thickness: f32) -> Response<()> {
+        println!("Draw Line from ({}:{}) to ({}:{}) with color {:?} and thickness {}", startx, endx,
+                 starty, endy, color, thickness);
+        Response::Result(())
+    }
+
+    fn draw_text(&mut self, text: String, color: (f32, f32, f32, f32), x: f32, y: f32, scale: f32, scale_position: bool) -> Response<()> {
+        println!("Draw Text \"{:?}\" at ({}:{}) with color {:?}, scale {} and scale_position: {}",
+                 text, x, y, color, scale, scale_position);
+        Response::Result(())
+    }
+
     fn print(&mut self, s: String) -> Response<()> {
         println!("print: {:?}", s);
         Response::Result(())

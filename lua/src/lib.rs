@@ -18,6 +18,7 @@ pub trait IntoAnyLuaValue {
 pub enum Event {
     Stopped,
     NewGame,
+    DrawHud,
 }
 
 impl IntoAnyLuaValue for Event {
@@ -25,6 +26,7 @@ impl IntoAnyLuaValue for Event {
         match self {
             Event::Stopped => AnyLuaValue::LuaString("stopped".to_string()),
             Event::NewGame => AnyLuaValue::LuaString("newgame".to_string()),
+            Event::DrawHud => AnyLuaValue::LuaString("drawhud".to_string()),
         }
     }
 }
@@ -110,6 +112,9 @@ pub trait LuaInterface {
     fn set_acceleration(&mut self, x: f32, y: f32, z: f32) -> Response<()>;
     fn wait_for_new_game(&mut self) -> Response<()>;
 
+    fn draw_line(&mut self, startx: f32, starty: f32, endx: f32, endy: f32, color: (f32, f32, f32, f32), thickness: f32) -> Response<()>;
+    fn draw_text(&mut self, text: String, color: (f32, f32, f32, f32), x: f32, y: f32, scale: f32, scale_position: bool) -> Response<()>;
+
     fn print(&mut self, s: String) -> Response<()>;
 }
 
@@ -187,6 +192,20 @@ impl<'lua> Lua<'lua> {
         lua.set("__wait_for_new_game", hlua::function0(move || {
             tas.borrow_mut().wait_for_new_game()
         }));
+
+        let tas = outer.clone();
+        lua.set("__draw_line", hlua::function9(
+            move |startx: f32, starty: f32, endx: f32, endy: f32, red: f32, green: f32, blue: f32, alpha: f32, thickness: f32| {
+                tas.borrow_mut().draw_line(startx, starty, endx, endy, (red, green, blue, alpha), thickness)
+            }
+        ));
+
+        let tas = outer.clone();
+        lua.set("__draw_text", hlua::function9(
+            move |text: String, red: f32, green: f32, blue: f32, alpha: f32, x: f32, y: f32, scale: f32, scale_position: bool| {
+                tas.borrow_mut().draw_text(text, (red, green, blue, alpha), x, y, scale, scale_position)
+            }
+        ));
 
         let tas = outer.clone();
         lua.set("__print", hlua::function1(move |s: String| {

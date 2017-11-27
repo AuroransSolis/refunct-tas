@@ -51,7 +51,7 @@ impl FString {
         FString(TArray::new())
     }
 
-    pub unsafe fn as_ptr(&self) -> *const char {
+    pub fn as_ptr(&self) -> *const char {
         self.0.ptr
     }
 }
@@ -93,9 +93,41 @@ impl<T: Into<FString>> From<T> for FName {
         };
         unsafe {
             let fun: extern "C" fn(*mut FName, *const char, u64) -> u64
-                = unsafe { mem::transmute(FNAME_FNAME) };
+                = mem::transmute(FNAME_FNAME);
             fun(&mut name as *mut FName, s.as_ptr(), 1);
         }
         name
+    }
+}
+
+#[derive(Debug)]
+#[repr(C, packed)]
+pub struct FLinearColor {
+    pub red: f32,
+    pub green: f32,
+    pub blue: f32,
+    pub alpha: f32,
+}
+
+impl FLinearColor {
+    pub fn new(red: f32, green: f32, blue: f32, alpha: f32) -> FLinearColor {
+        FLinearColor {
+            red,
+            green,
+            blue,
+            alpha,
+        }
+    }
+}
+
+impl From<(f32, f32, f32)> for FLinearColor {
+    fn from(t: (f32, f32, f32)) -> FLinearColor {
+        FLinearColor::new(t.0, t.1, t.2, 1.0)
+    }
+}
+
+impl From<(f32, f32, f32, f32)> for FLinearColor {
+    fn from(t: (f32, f32, f32, f32)) -> FLinearColor {
+        FLinearColor::new(t.0, t.1, t.2, t.3)
     }
 }

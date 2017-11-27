@@ -54,6 +54,12 @@ impl<'lua> Tas<'lua> {
             }
             StreamToLua::Start(s) => {
                 log!("Starting lua...");
+                log!("Cleaning ue_lua_rx...");
+                let mut count = 0;
+                while let Ok(_) = self.iface.borrow().ue_lua_rx.try_recv() {
+                    count += 1;
+                }
+                log!("Removed {} messages", count);
                 self.lua = Lua::new(self.iface.clone());
                 if let Some(dir) = self.working_dir.as_ref() {
                     log!("Add {} to package.path.", dir);
@@ -154,6 +160,7 @@ impl LuaInterface for GameInterface {
         match self.ue_lua_rx.recv().unwrap() {
             UeToLua::Tick => Response::Result(Event::Stopped),
             UeToLua::NewGame => Response::Result(Event::NewGame),
+            UeToLua::DrawHud => Response::Result(Event::DrawHud),
         }
     }
 
@@ -239,9 +246,22 @@ impl LuaInterface for GameInterface {
             match self.step() {
                 Response::ExitPlease => return Response::ExitPlease,
                 Response::Result(Event::Stopped) => continue,
+                Response::Result(Event::DrawHud) => continue,
                 Response::Result(Event::NewGame) => return Response::Result(()),
             }
         }
+    }
+
+    fn draw_line(&mut self, startx: f32, starty: f32, endx: f32, endy: f32, color: (f32, f32, f32, f32), thickness: f32) -> Response<()> {
+        if self.syscall() { return Response::ExitPlease }
+        self.lua_ue_tx.send(LuaToUe::DrawLine(startx, starty, endx, endy, color, thickness)).unwrap();
+        Response::Result(())
+    }
+
+    fn draw_text(&mut self, text: String, color: (f32, f32, f32, f32), x: f32, y: f32, scale: f32, scale_position: bool) -> Response<()> {
+        if self.syscall() { return Response::ExitPlease }
+        self.lua_ue_tx.send(LuaToUe::DrawText(text, color, x, y, scale, scale_position)).unwrap();
+        Response::Result(())
     }
 
     fn print(&mut self, s: String) -> Response<()> {

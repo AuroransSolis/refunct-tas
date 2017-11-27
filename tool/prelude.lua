@@ -39,11 +39,28 @@ function print(...)
 end
 
 function step()
-  return parse(__step())
+  local evt = parse(__step());
+  if evt == "drawhud" then
+    if drawhud ~= nil then
+      drawhud()
+    end
+  end
 end
 
 function waitfornewgame()
-  __wait_for_new_game()
+  parse(__wait_for_new_game())
+end
+
+function presskey(key)
+  parse(__press_key(key))
+end
+
+function releasekey(key)
+  parse(__release_key(key))
+end
+
+function movemouse(x, y)
+  parse(__move__mouse(x, y))
 end
 
 function getdelta()
@@ -60,7 +77,7 @@ function getlocation()
 end
 
 function setlocation(x, y, z)
-  __set_location(x, y, z)
+  parse(__set_location(x, y, z))
 end
 
 function getrotation()
@@ -70,7 +87,7 @@ end
 
 function setrotation(pitch, yaw)
   local _, _, roll = getrotation()
-  __set_rotation(pitch, yaw, roll)
+  parse(__set_rotation(pitch, yaw, roll))
 end
 
 function getvelocity()
@@ -79,12 +96,20 @@ function getvelocity()
 end
 
 function setvelocity(x, y, z)
-  __set_velocity(x, y, z)
+  parse(__set_velocity(x, y, z))
 end
 
 function getacceleration()
   local acc = parse(__get_acceleration())
   return acc[1], acc[2], acc[3]
+end
+
+function drawline(startx, starty, endx, endy, red, green, blue, alpha, thickness)
+  parse(__draw_line(startx, starty, endx, endy, red, green, blue, alpha, thickness))
+end
+
+function drawtext(text, red, green, blue, alpha, x, y, scale, scaleposition)
+  parse(__draw_text(text, red, green, blue, alpha, x, y, scale, scaleposition))
 end
 
 Frame = {
@@ -111,48 +136,48 @@ local lastframe = Frame:new()
 function execframe(frame)
   -- new input
   if frame.forward and not lastframe.forward then
-    __press_key(forward)
+    presskey(forward)
   end
   if frame.backward and not lastframe.backward then
-    __press_key(backward)
+    presskey(backward)
   end
   if frame.left and not lastframe.left then
-    __press_key(left)
+    presskey(left)
   end
   if frame.right and not lastframe.right then
-    __press_key(right)
+    presskey(right)
   end
   if frame.jump and not lastframe.jump then
-    __press_key(jump)
+    presskey(jump)
   end
   if frame.crouch and not lastframe.crouch then
-    __press_key(crouch)
+    presskey(crouch)
   end
   if frame.menu and not lastframe.menu then
-    __press_key(menu)
+    presskey(menu)
   end
 
   -- old inputs
   if lastframe.forward and not frame.forward then
-    __release_key(forward)
+    releasekey(forward)
   end
   if lastframe.backward and not frame.backward then
-    __release_key(backward)
+    releasekey(backward)
   end
   if lastframe.left and not frame.left then
-    __release_key(left)
+    releasekey(left)
   end
   if lastframe.right and not frame.right then
-    __release_key(right)
+    releasekey(right)
   end
   if lastframe.jump and not frame.jump then
-    __release_key(jump)
+    releasekey(jump)
   end
   if lastframe.crouch and not frame.crouch then
-    __release_key(crouch)
+    releasekey(crouch)
   end
   if lastframe.menu and not frame.menu then
-    __release_key(menu)
+    releasekey(menu)
   end
 
   -- rotation
@@ -164,7 +189,7 @@ function execframe(frame)
   lastframe = frame
 
   if deltatime ~= 0 then
-    __set_delta(deltatime)
+    setdelta(deltatime)
   end
 
   step()
