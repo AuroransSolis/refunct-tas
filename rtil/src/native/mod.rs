@@ -8,6 +8,12 @@ mod slateapp;
 mod tick;
 mod app;
 mod memory;
+mod world;
+mod gameinstance;
+mod actor;
+mod pawn;
+mod player;
+mod gamestate;
 
 #[cfg(unix)] use self::linux::*;
 #[cfg(windows)] use self::windows::*;

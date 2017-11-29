@@ -30,4 +30,22 @@ pub(in native) extern "C" fn save(this: usize) {
     log!("Got AMyCharacter: {:#x}", this);
     log!("Got AMyCharacter::RootComponent: {:#x}", AMyCharacter::root_component() as usize);
     log!("Got AMyCharacter::Movement: {:#x}", AMyCharacter::movement() as usize);
+    use ::std::mem::size_of;
+    use native::ue::*;
+    use native::character::*;
+    use native::pawn::*;
+    use native::actor::*;
+    log!("ACharacter: {:#x}", size_of::<ACharacter<()>>());
+    log!("APawn: {:#x}", size_of::<APawn<()>>());
+    log!("AActor: {:#x}", size_of::<AActor<()>>());
+    log!("AInfo: {:#x}", size_of::<AActor<()>>());
+    log!("FActorTickFunction: {:#x}", size_of::<FActorTickFunction>());
+    log!("FTickFunction: {:#x}", size_of::<FTickFunction>());
+    log!("UObject: {:#x}", size_of::<UObject<()>>());
+    log!("UObjectBase: {:#x}", size_of::<UObjectBase<()>>());
+    unsafe {
+        let character: *const AMyCharacter = ::std::mem::transmute(this);
+//        assert_eq!(&(*character).base.base.base.root_component as *const _ as isize - character as isize, 0x168);
+//        assert_eq!(&(*character).base.character_movement as *const _ as isize - character as isize, 0x3c0);
+    }
 }
