@@ -24,8 +24,9 @@ pub struct UWorld {
     my_particle_event_manager: *const AParticleEventManager, // 0x0b8
     default_physics_volume: *const APhysicsVolume, // 0x0c0
     view_locations_rendered_list_frame: TArray<FVector>, // 0x0c8
-    b_world_was_loaded_this_tick: Bool32, // 0x0d8
-    b_trigger_post_load_map: Bool32, // 0x0dc
+//    b_world_was_loaded_this_tick: Bool32, // 0x0d8
+//    b_trigger_post_load_map: Bool32, // 0x0dc
+    bitfield: Bool32,
     navigation_system: *const UNavigationSystem, // 0x0e0
     authority_game_mode: *const AGameMode, // 0x0e8
     game_state: *const AGameState, // 0x0f0

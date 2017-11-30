@@ -169,7 +169,7 @@ pub struct UObjectBase<B> {
 
 pub struct UObject<B> {
     base: UObjectBase<B>
-}
+} // 0x030 / 0x020
 
 #[repr(C)]
 pub enum ERHIFeatureLevelType {
@@ -231,6 +231,12 @@ pub struct TUniquePtr<T> {
 
 #[repr(C)]
 pub struct TTraceThreadData<T> {
+    _t: PhantomData<T>,
+}
+
+#[repr(C)]
+pub struct TEnumAsByte<T> {
+    value: u8,
     _t: PhantomData<T>,
 }
 

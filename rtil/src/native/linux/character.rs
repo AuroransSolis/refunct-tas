@@ -36,16 +36,21 @@ pub(in native) extern "C" fn save(this: usize) {
     use native::pawn::*;
     use native::actor::*;
     log!("ACharacter: {:#x}", size_of::<ACharacter<()>>());
-    log!("APawn: {:#x}", size_of::<APawn<()>>());
-    log!("AActor: {:#x}", size_of::<AActor<()>>());
-    log!("AInfo: {:#x}", size_of::<AActor<()>>());
-    log!("FActorTickFunction: {:#x}", size_of::<FActorTickFunction>());
-    log!("FTickFunction: {:#x}", size_of::<FTickFunction>());
-    log!("UObject: {:#x}", size_of::<UObject<()>>());
-    log!("UObjectBase: {:#x}", size_of::<UObjectBase<()>>());
     unsafe {
         let character: *const AMyCharacter = ::std::mem::transmute(this);
-//        assert_eq!(&(*character).base.base.base.root_component as *const _ as isize - character as isize, 0x168);
-//        assert_eq!(&(*character).base.character_movement as *const _ as isize - character as isize, 0x3c0);
+        assert_eq!(size_of::<UObjectBase<()>>(), 0x30, "UObjectBase");
+        assert_eq!(size_of::<UObject<()>>(), 0x30, "UObject");
+        assert_eq!(size_of::<FTickFunction>(), 0x48, "FTickFunction");
+        assert_eq!(size_of::<FActorTickFunction>(), 0x50, "FActorTickFunction");
+        assert_eq!(size_of::<AActor<()>>(), 0x380, "AActor");
+        assert_eq!(size_of::<AInfo<()>>(), 0x388, "AInfo");
+        assert_eq!(size_of::<APawn<()>>(), 0x3e8, "APawn");
+        assert_eq!(&(*character).base.base.base.custom_time_dilation as *const _ as isize - character as isize, 0x80, "Custom Time Dilation");
+        assert_eq!(&(*character).base.base.base.input_component as *const _ as isize - character as isize, 0x120, "Input Component");
+        assert_eq!(&(*character).base.base.base.instigator as *const _ as isize - character as isize, 0x150, "Instigator");
+        assert_eq!(&(*character).base.base.base.root_component as *const _ as isize - character as isize, 0x168, "Root Component");
+        assert_eq!(&(*character).base.base.base.instance_components as *const _ as usize - character as usize, 0x2c0, "Instance Components");
+        assert_eq!(&(*character).base.base.controller as *const _ as usize - character as usize, 0x3c0, "Controller");
+        assert_eq!(&(*character).base.character_movement as *const _ as isize - character as isize, 0x3f0, "Character Movement");
     }
 }
