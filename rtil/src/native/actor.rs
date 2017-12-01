@@ -214,7 +214,6 @@ pub struct FTickFunction {
     relative_tick_cooldown: f32, // 0x030
     last_tick_game_time_seconds: f32, // 0x034
     tick_interval: f32, // 0x038
-    // padding 0x004
     tick_task_level: *const FTickTaskLevel, // 0x040
 } // 0x048
 

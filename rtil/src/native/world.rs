@@ -3,6 +3,7 @@ use native::AController;
 use native::gameinstance::UMyGameInstance;
 use native::gamestate::AGameState;
 use native::pawn::APawn;
+use native::level::ULevel;
 
 #[repr(C)]
 pub struct UWorld {
@@ -16,7 +17,7 @@ pub struct UWorld {
     physics_collision_handler: *const UPhysicsCollisionHandler, // 0x060
     extra_referenced_objects: TArray<*const UObject<()>>, // 0x068
     per_module_data_objects: TArray<*const UObject<()>>, // 0x078
-    streaming_levels: TArray<*const ULevelStreaming>, // 0x088
+    pub streaming_levels: TArray<*const ULevelStreaming>, // 0x088
     streaming_levels_prefix: *const FString, // 0x098
     current_level_pending_visibility: *const ULevel, // 0x0a0
     current_level_pending_invisibility: *const ULevel, // 0x0a8
@@ -32,12 +33,12 @@ pub struct UWorld {
     game_state: *const AGameState, // 0x0f0
     ai_system: *const UAISystemBase, // 0x0f8
     avoidance_manager: *const UAvoidanceManager, // 0x100
-    levels: TArray<*const ULevel>, // 0x108
+    pub levels: TArray<*const ULevel>, // 0x108
     level_collections: TArray<FLevelCollection>, // 0x118
     // for some reason this is instead some sort of pointer in-memory of the game
     //active_level_collection_index: i32,
     _unk3: usize, // 0x128
-    current_level: *const ULevel, // 0x130
+    pub current_level: *const ULevel, // 0x130
     owning_game_instance: *const UMyGameInstance, // 0x138
     parameter_collection_instances: TArray<*const UMaterialParameterCollectionInstance>, // 0x140
     canvas_for_rendering_to_target: *const UCanvas, // 0x150
@@ -75,4 +76,19 @@ struct AsyncTraceData {
     num_queued_overlap_data: i32,
     b_async_allowed: bool,
     async_trace_completion_event: FGraphEventArray,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn uworld_offsets() {
+        unsafe {
+            let world: *const UWorld = ::std::ptr::null();
+            ptr_eq!(world, streaming_levels, 0x088, "UWorld.streaming_levels");
+            ptr_eq!(world, levels, 0x108, "UWorld.levels");
+            ptr_eq!(world, current_level, 0x130, "UWorld.current_level");
+        }
+    }
 }

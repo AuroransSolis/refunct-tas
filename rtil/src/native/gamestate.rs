@@ -1,5 +1,6 @@
 use native::ue::*;
 use native::actor::AInfo;
+use native::level::ULevel;
 
 #[repr(C)]
 pub struct AGameStateBase<B> {

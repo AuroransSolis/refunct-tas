@@ -1,3 +1,9 @@
+macro_rules! ptr_eq {
+    ($var:ident, $($field:ident).*, $cmp:expr, $args:tt) => {
+        assert_eq!(&(*$var).$($field).* as *const _ as usize - $var as usize, $cmp, $args);
+    }
+}
+
 #[cfg(unix)] #[macro_use] mod linux;
 #[cfg(windows)] #[macro_use] mod windows;
 mod ue;
@@ -14,6 +20,7 @@ mod actor;
 mod pawn;
 mod player;
 mod gamestate;
+mod level;
 
 #[cfg(unix)] use self::linux::*;
 #[cfg(windows)] use self::windows::*;

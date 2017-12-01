@@ -23,6 +23,13 @@ pub type FVector_NetQuantize10 = FVector;
 pub type FVector_NetQuantize100 = FVector;
 
 #[repr(C)]
+pub struct FIntVector {
+    pub x: i32,
+    pub y: i32,
+    pub z: i32,
+}
+
+#[repr(C)]
 pub struct FQuat {
     pub x: f32,
     pub y: f32,
@@ -42,6 +49,21 @@ pub struct FVector2D {
     pub x: f32,
     pub y: f32,
 }
+
+#[repr(C)]
+pub struct FBox {
+    min: FVector, // 0x000
+    max: FVector, // 0x00c
+    is_valid: Bool8, // 0x018
+} // 0x019
+
+#[repr(C)]
+pub struct FForceFeedbackValues {
+    left_large: f32, // 0x000
+    left_small: f32, // 0x004
+    right_large: f32, // 0x008
+    right_small: f32, // 0x00c
+} // 0x010
 
 #[repr(C)]
 pub struct TArray<T> {
@@ -189,6 +211,14 @@ pub struct TWeakObjectPtr<T> {
 }
 
 #[repr(C)]
+pub struct FGuid {
+    a: u32,
+    b: u32,
+    c: u32,
+    d: u32,
+}
+
+#[repr(C)]
 pub struct TSet<T> {
     _t: PhantomData<T>,
 }
@@ -219,6 +249,33 @@ pub struct FTimerHandle {
 }
 
 #[repr(C)]
+pub struct FUrl {
+    protocol: FString, // 0x000
+    host: FString, // 0x010
+    port: i32, // 0x020
+    map: FString, // 0x028
+    redirect_url: FString, // 0x038
+    op: TArray<FString>, // 0x048
+    portal: FString, // 0x058
+    valid: i32, // 0x068
+} // 0x06c
+
+pub type FGraphEventRef = TRefCountPtr<FGraphEvent>;
+
+/// Implements ref counting for classes implementing AddRef / Release
+#[repr(C)]
+pub struct TRefCountPtr<T> {
+    reference: *const T,
+}
+
+#[repr(C)]
+pub struct TSharedRef<T> {
+    object: *const T,
+}
+
+// Stubs
+
+#[repr(C)]
 pub struct TSubclassOf<C> {
     class: *const UClass,
     _c: PhantomData<C>,
@@ -240,6 +297,12 @@ pub struct TEnumAsByte<T> {
     _t: PhantomData<T>,
 }
 
+#[repr(C)]
+pub struct TMap<K, V> {
+    _k: PhantomData<K>,
+    _v: PhantomData<V>,
+}
+
 pub type Unk1 = [u8; 1];
 pub type Unk2 = [u8; 2];
 pub type Unk4 = [u8; 4];
@@ -247,7 +310,6 @@ pub type Unk8 = [u8; 8];
 
 pub struct UClass;
 pub struct UPackage;
-pub struct ULevel;
 pub struct ULineBatchComponent;
 pub struct AGameNetworkManager;
 pub struct UPhysicsCollisionHandler;
@@ -305,4 +367,42 @@ pub struct UAnimMontage;
 pub struct FRootMotionSource;
 pub struct FTraceDatum;
 pub struct FOverlapDatum;
-pub struct FGraphEventRef;
+pub struct UModel;
+pub struct UModelComponent;
+pub struct ULevelActorContainer;
+pub struct ULevelScriptBlueprint;
+pub struct ALevelScriptActor;
+pub struct ANavigationObjectBase;
+pub struct UNavigationDataChunk;
+pub struct FPrecomputedLightVolume;
+pub struct FPrecomputedVolumetricLightmap;
+pub struct UMapBuildDataRegistry;
+pub struct ALevelBounds;
+pub struct AInstanceFoliageActor;
+pub struct AWorldSettings;
+pub struct UAssetUserData;
+pub struct FPendingAutoReceiveInputActor;
+pub struct FPrecomputedVisibilityBucket;
+pub struct FColor;
+pub struct FGraphEvent;
+pub struct UPlayer;
+pub struct UInterpTrackInstDirector;
+pub struct AHud;
+pub struct APlayerCameraManager;
+pub struct UCheatManager;
+pub struct UPlayerInput;
+pub struct FActiveForceFeedbackEffect;
+pub struct FDynamicForceFeedbackDetails;
+pub struct UNetConnection;
+pub struct FKey;
+#[repr(C)]
+pub enum EMouseCursorType {
+    __LEL,
+}
+#[repr(C)]
+pub enum ECollisionChannel {
+    __LEL,
+}
+pub struct SVirtualJoystick;
+pub struct FActiveHapticFeedbackEffect;
+pub struct UTouchInterface;
