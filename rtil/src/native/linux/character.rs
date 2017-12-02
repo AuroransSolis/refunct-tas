@@ -55,21 +55,3 @@ pub(in native) extern "C" fn save(this: usize) {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn character_offsets() {
-        unsafe {
-            let character: *const AMyCharacter = ::std::ptr::null();
-            ptr_eq!(character, base.base.base.custom_time_dilation, 0x80, "Custom Time Dilation");
-            ptr_eq!(character, base.base.base.input_component, 0x120, "Input Component");
-            ptr_eq!(character, base.base.base.instigator, 0x150, "Instigator");
-            ptr_eq!(character, base.base.base.root_component, 0x168, "Root Component");
-            ptr_eq!(character, base.base.base.instance_components, 0x2c0, "Instance Components");
-            ptr_eq!(character, base.base.controller, 0x3c0, "Controller");
-            ptr_eq!(character, base.character_movement, 0x3f0, "Character Movement");
-        }
-    }
-}

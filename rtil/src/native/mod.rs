@@ -21,6 +21,12 @@ mod pawn;
 mod player;
 mod gamestate;
 mod level;
+mod scenecomponent;
+mod actorcomponent;
+mod charactermovementcomponent;
+mod pawnmovementcomponent;
+mod navmovementcomponent;
+mod movementcomponent;
 
 #[cfg(unix)] use self::linux::*;
 #[cfg(windows)] use self::windows::*;

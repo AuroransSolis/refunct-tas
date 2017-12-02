@@ -83,6 +83,12 @@ pub struct ULevel {
     pending_auto_receive_input_actors: TArray<FPendingAutoReceiveInputActor>, // 0x300
 }
 
+impl ULevel {
+    pub unsafe fn get_raw() -> *const ULevel {
+        (*UWorld::get_raw()).current_level
+    }
+}
+
 #[repr(C)]
 pub struct FPrecomputedVisibilityHandler {
     precomputed_visibility_cell_bucket_origin_xy: FVector2D, // 0x000

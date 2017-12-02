@@ -4,6 +4,8 @@ use native::gameinstance::UMyGameInstance;
 use native::gamestate::AGameState;
 use native::pawn::APawn;
 use native::level::ULevel;
+use native::actorcomponent::UActorComponent;
+use native;
 
 #[repr(C)]
 pub struct UWorld {
@@ -53,11 +55,17 @@ pub struct UWorld {
     non_default_physics_volume_list: TArray<APhysicsVolume>, // 0x1b0
     physics_scene: *const FPhysScene, // 0x1c0
     // for now unsized, so rip
-    components_that_need_end_of_frame_update: TSet<TWeakObjectPtr<UActorComponent>>,
-    components_that_need_end_of_frame_update_on_game_thread: TSet<TWeakObjectPtr<UActorComponent>>,
+    components_that_need_end_of_frame_update: TSet<TWeakObjectPtr<UActorComponent<()>>>,
+    components_that_need_end_of_frame_update_on_game_thread: TSet<TWeakObjectPtr<UActorComponent<()>>>,
     // TODO: padding for unsized types
     async_trace_state: FWorldAsyncTraceState,
     // ... World.h:988 following
+}
+
+impl UWorld {
+    pub unsafe fn get_raw() -> *const UWorld {
+        native::GWORLD as *const UWorld
+    }
 }
 
 #[repr(C)]

@@ -1,5 +1,9 @@
+use std::cell::RefCell;
+
+use statics::MutexGuardWrapper;
 use native::ue::*;
 use native::pawn::APawn;
+use native::level::ULevel;
 
 use native::AMYCHARACTER_TICK;
 use native::ue::FVector;
@@ -108,32 +112,40 @@ pub struct FRepRootMotionMontage {
     linear_velocity: FVector_NetQuantize10,
 }
 
-lazy_static! {
-    pub(in native) static ref CHARACTER: Static<usize> = Static::new();
-}
+static mut CHARACTER: Static<&'static mut AMyCharacter> = Static::new();
 
 pub struct AMyCharacter {
     pub base: ACharacter<()>,
 }
 
 impl AMyCharacter {
-    pub fn location() -> (f32, f32, f32) {
-        let root = AMyCharacter::root_component();
+    pub fn get() -> MutexGuardWrapper<'static, &'static mut AMyCharacter> {
+        if CHARACTER.is_none() {
+            unsafe {
+                let actors = &(*ULevel::get_raw()).actors;
+                let actor = actors[actors.len()];
+                let character = actor as *const AMyCharacter as *mut AMyCharacter;
+                let character = RefCell::new(&mut *character);
+                CHARACTER.set(character);
+            }
+        }
+        CHARACTER.get()
+    }
+    pub fn location(&self) -> FVector {
         unsafe {
-            ((*root).location.x, (*root).location.y, (*root).location.z)
+            (*self.base.base.base.root_component).relative_location
         }
     }
-    pub fn set_location(x: f32, y: f32, z: f32) {
-        let root = AMyCharacter::root_component();
+    pub fn set_location(&mut self, location: FVector) {
         unsafe {
-            (*root).location = FVector { x, y, z };
+            let loc_ptr = &(*self.base.base.base.root_component).relative_location as *const FVector as *mut FVector;
+            *loc_ptr = location;
         }
     }
-    pub fn velocity() -> (f32, f32, f32) {
+    pub fn velocity(&self) -> FVector {
         let movement = AMyCharacter::movement();
         unsafe {
-            let FVector { x, y, z } = (*movement).velocity;
-            (x, y, z)
+            (*self.base.character_movement)
         }
     }
     pub fn set_velocity(x: f32, y: f32, z: f32) {
@@ -153,6 +165,25 @@ impl AMyCharacter {
         let movement = AMyCharacter::movement();
         unsafe {
             (*movement).acceleration = FVector { x, y, z };
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn character_offsets() {
+        unsafe {
+            let character: *const AMyCharacter = ::std::ptr::null();
+            ptr_eq!(character, base.base.base.custom_time_dilation, 0x80, "Custom Time Dilation");
+            ptr_eq!(character, base.base.base.input_component, 0x120, "Input Component");
+            ptr_eq!(character, base.base.base.instigator, 0x150, "Instigator");
+            ptr_eq!(character, base.base.base.root_component, 0x168, "Root Component");
+            ptr_eq!(character, base.base.base.instance_components, 0x2c0, "Instance Components");
+            ptr_eq!(character, base.base.controller, 0x3c0, "Controller");
+            ptr_eq!(character, base.character_movement, 0x3f0, "Character Movement");
         }
     }
 }

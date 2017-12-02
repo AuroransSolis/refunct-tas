@@ -1,5 +1,7 @@
 use native::ue::*;
 use native::pawn::APawn;
+use native::scenecomponent::USceneComponent;
+use native::actorcomponent::UActorComponent;
 
 #[repr(C)]
 pub struct AActor<B> {
@@ -97,8 +99,8 @@ pub struct AActor<B> {
     on_actor_hit: *const (),
     on_destroyed: *const (),
     on_end_play: *const (),
-    blueprint_created_components: TArray<*const UActorComponent>,
-    pub instance_components: TArray<*const UActorComponent>, // 0x2c0
+    blueprint_created_components: TArray<*const UActorComponent<()>>,
+    pub instance_components: TArray<*const UActorComponent<()>>, // 0x2c0
     // apparently some padding
     // TODO: fix for Windows
     _pad2: [u8; 0xb0],

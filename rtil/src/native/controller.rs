@@ -3,6 +3,7 @@ use native::pawn::APawn;
 use native::character::ACharacter;
 use native::actor::AActor;
 use native::level::ULevel;
+use native::scenecomponent::USceneComponent;
 
 use native::ACONTROLLER_GETCONTROLROTATION;
 #[cfg(unix)] use native::linux::controller::save;
@@ -61,6 +62,7 @@ pub struct APlayerController {
     cheat_class: TSubclassOf<UCheatManager>,
     player_input: *const UPlayerInput,
     active_force_feedback_effects: TArray<FActiveForceFeedbackEffect>,
+    // TODO: implement TMap
     dynamic_force_feedbacks: TMap<i32, FDynamicForceFeedbackDetails>,
     active_haptic_effect_left: TSharedPtr<FActiveHapticFeedbackEffect>,
     active_haptic_effect_right: TSharedPtr<FActiveHapticFeedbackEffect>,

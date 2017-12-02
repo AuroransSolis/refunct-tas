@@ -66,6 +66,7 @@ find! {
     FMEMORY_MALLOC, "^FMemory::Malloc(unsigned long, unsigned int)",
     FMEMORY_FREE, "^FMemory::Free(void*)",
     FNAME_FNAME, "^FName::complete object constructor(wchar_t const*, EFindName)",
+    GWORLD, "GWorld",
 }
 
 pub(in native) fn make_rw(addr: usize) {

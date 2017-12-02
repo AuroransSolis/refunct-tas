@@ -1,6 +1,7 @@
 use std::ptr;
 use std::mem;
 use std::marker::PhantomData;
+use std::ops::Index;
 
 use native::FMemory;
 use native::FNAME_FNAME;
@@ -51,11 +52,24 @@ pub struct FVector2D {
 }
 
 #[repr(C)]
+pub struct FRotationConversionCache {
+    cached_quat: FQuat,
+    cached_rotator: FRotator,
+}
+
+#[repr(C)]
 pub struct FBox {
     min: FVector, // 0x000
     max: FVector, // 0x00c
     is_valid: Bool8, // 0x018
 } // 0x019
+
+#[repr(C)]
+pub struct FBoxSphereBounds {
+    origin: FVector, // 0x000
+    box_extent: FVector, // 0x00c
+    sphere_radius: f32, // 0x018
+} // 0x01c
 
 #[repr(C)]
 pub struct FForceFeedbackValues {
@@ -94,6 +108,33 @@ impl<T> TArray<T> {
         assert!(self.len  < self.capacity);
         unsafe { *self.ptr.offset(self.len as isize) = t };
         self.len += 1;
+    }
+
+    pub fn capacity(&self) -> i32 {
+        self.capacity
+    }
+    pub fn len(&self) -> i32 {
+        self.len
+    }
+}
+
+impl<T> Index<usize> for TArray<T> {
+    type Output = T;
+
+    fn index(&self, index: usize) -> &T {
+        assert!(index as i32 >= self.len, "index out of range");
+        unsafe {
+            &*self.ptr.offset(index as isize)
+        }
+    }
+}
+
+impl<T> Index<i32> for TArray<T> {
+    type Output = T;
+
+    fn index(&self, index: i32) -> &T {
+        assert!(index >= 0, "negative index");
+        self.index(index as usize)
     }
 }
 
@@ -330,7 +371,6 @@ pub struct FScene;
 pub struct APlayerController;
 pub struct ACameraActor;
 pub struct FPhysScene;
-pub struct UActorComponent;
 pub struct UGameEngine;
 pub struct UOnlineSession;
 pub struct FOnPreClientTravel;
@@ -349,7 +389,6 @@ pub enum EObjectFlags {
     // rust can't represent unsized types as sized types
     __LEL,
 }
-pub struct USceneComponent;
 pub struct UInputComponent;
 pub struct AMatineeActor;
 pub struct UChildActorComponent;
@@ -359,7 +398,6 @@ pub struct UBillboardComponent;
 pub struct ASpectatorPawn;
 pub struct APlayerState;
 pub struct USkeletalMeshComponent;
-pub struct UCharacterMovementComponent;
 pub struct UCapsuleComponent;
 pub struct UPrimitiveComponent;
 pub struct FSimulatedRootMotionReplicatedMove;
@@ -406,3 +444,7 @@ pub enum ECollisionChannel {
 pub struct SVirtualJoystick;
 pub struct FActiveHapticFeedbackEffect;
 pub struct UTouchInterface;
+pub struct FSimpleMemberReference;
+pub struct FScopedMovementUpdate;
+pub struct ANavigationData;
+pub struct UPathFollowingComponent;
