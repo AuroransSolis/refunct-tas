@@ -8,6 +8,7 @@ use lua::{Lua, LuaInterface, Response, Event};
 
 use threads::{StreamToLua, LuaToStream, LuaToUe, UeToLua, Config};
 use native::{AMyCharacter, AController, FApp};
+use native::ue::FVector;
 
 struct Tas<'lua> {
     iface: Rc<RefCell<GameInterface>>,
@@ -192,12 +193,13 @@ impl LuaInterface for GameInterface {
 
     fn get_location(&mut self) -> Response<(f32, f32, f32)> {
         if self.syscall() { return Response::ExitPlease }
-        Response::Result(AMyCharacter::location())
+        let FVector { x, y, z } = AMyCharacter::get().location();
+        Response::Result((x, y, z))
     }
 
     fn set_location(&mut self, x: f32, y: f32, z: f32) -> Response<()> {
         if self.syscall() { return Response::ExitPlease }
-        AMyCharacter::set_location(x, y, z);
+        AMyCharacter::get().set_location(FVector { x, y, z });
         Response::Result(())
     }
 
@@ -214,23 +216,25 @@ impl LuaInterface for GameInterface {
 
     fn get_velocity(&mut self) -> Response<(f32, f32, f32)> {
         if self.syscall() { return Response::ExitPlease }
-        Response::Result(AMyCharacter::velocity())
+        let FVector { x, y, z } = AMyCharacter::get().velocity();
+        Response::Result((x, y, z))
     }
 
     fn set_velocity(&mut self, x: f32, y: f32, z: f32) -> Response<()> {
         if self.syscall() { return Response::ExitPlease }
-        AMyCharacter::set_velocity(x, y, z);
+        AMyCharacter::get().set_velocity(FVector { x, y, z });
         Response::Result(())
     }
 
     fn get_acceleration(&mut self) -> Response<(f32, f32, f32)> {
         if self.syscall() { return Response::ExitPlease }
-        Response::Result(AMyCharacter::acceleration())
+        let FVector { x, y, z } = AMyCharacter::get().acceleration();
+        Response::Result((x, y, z))
     }
 
     fn set_acceleration(&mut self, x: f32, y: f32, z: f32) -> Response<()> {
         if self.syscall() { return Response::ExitPlease }
-        AMyCharacter::set_acceleration(x, y, z);
+        AMyCharacter::get().set_acceleration(FVector { x, y, z });
         Response::Result(())
     }
 

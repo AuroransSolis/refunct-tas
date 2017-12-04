@@ -7,6 +7,7 @@ use native::FMemory;
 use native::FNAME_FNAME;
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct FRotator {
     pitch: f32,
     yaw: f32,
@@ -14,6 +15,7 @@ pub struct FRotator {
 }
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct FVector {
     pub x: f32,
     pub y: f32,
@@ -23,7 +25,17 @@ pub struct FVector {
 pub type FVector_NetQuantize10 = FVector;
 pub type FVector_NetQuantize100 = FVector;
 
+#[repr(C, align(16))]
+#[derive(Debug, Clone, Copy)]
+pub struct FVector4 {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
+}
+
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct FIntVector {
     pub x: i32,
     pub y: i32,
@@ -31,6 +43,7 @@ pub struct FIntVector {
 }
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct FQuat {
     pub x: f32,
     pub y: f32,
@@ -39,6 +52,7 @@ pub struct FQuat {
 }
 
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct FTransform {
     pub rotation: FQuat,
     pub translation: FVector,
@@ -46,18 +60,21 @@ pub struct FTransform {
 }
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct FVector2D {
     pub x: f32,
     pub y: f32,
 }
 
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct FRotationConversionCache {
     cached_quat: FQuat,
     cached_rotator: FRotator,
 }
 
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct FBox {
     min: FVector, // 0x000
     max: FVector, // 0x00c
@@ -65,6 +82,7 @@ pub struct FBox {
 } // 0x019
 
 #[repr(C)]
+#[derive(Debug, Clone)]
 pub struct FBoxSphereBounds {
     origin: FVector, // 0x000
     box_extent: FVector, // 0x00c
@@ -72,6 +90,7 @@ pub struct FBoxSphereBounds {
 } // 0x01c
 
 #[repr(C)]
+#[derive(Debug, Clone, Copy)]
 pub struct FForceFeedbackValues {
     left_large: f32, // 0x000
     left_small: f32, // 0x004
@@ -80,6 +99,7 @@ pub struct FForceFeedbackValues {
 } // 0x010
 
 #[repr(C)]
+#[derive(Debug)]
 pub struct TArray<T> {
     ptr: *mut T,
     len: i32,
@@ -122,7 +142,7 @@ impl<T> Index<usize> for TArray<T> {
     type Output = T;
 
     fn index(&self, index: usize) -> &T {
-        assert!(index as i32 >= self.len, "index out of range");
+        assert!((index as i32) < self.len, "index out of range");
         unsafe {
             &*self.ptr.offset(index as isize)
         }
@@ -174,7 +194,7 @@ impl<T> Drop for TArray<T> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 #[repr(C)]
 pub struct FName {
     number: u64,
@@ -188,7 +208,7 @@ impl<T: Into<FString>> From<T> for FName {
         };
         unsafe {
             let fun: extern "C" fn(*mut FName, *const char, u64) -> u64
-                = unsafe { mem::transmute(FNAME_FNAME) };
+                = mem::transmute(FNAME_FNAME);
             fun(&mut name as *mut FName, s.as_ptr(), 1);
         }
         name
@@ -196,6 +216,7 @@ impl<T: Into<FString>> From<T> for FName {
 }
 
 #[repr(C, packed)]
+#[derive(Debug, Clone, Copy)]
 pub struct Bool32(u32);
 
 impl From<Bool32> for bool {
@@ -208,6 +229,7 @@ impl From<Bool32> for bool {
 }
 
 #[repr(C, packed)]
+#[derive(Debug, Clone, Copy)]
 pub struct Bool8(u8);
 
 impl From<Bool8> for bool {
@@ -448,3 +470,5 @@ pub struct FSimpleMemberReference;
 pub struct FScopedMovementUpdate;
 pub struct ANavigationData;
 pub struct UPathFollowingComponent;
+pub struct FSavedMove_Character;
+pub struct FCharacterReplaySample;

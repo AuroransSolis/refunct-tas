@@ -7,8 +7,6 @@ type FTransformUpdated = *const ();
 #[repr(C)]
 pub struct USceneComponent {
     base: UActorComponent<()>, // 0x000
-    // TODO: weird padding
-    _pad: [Unk8; 0x0],
     cached_level_collection: *const FLevelCollection,
     physics_volume: TWeakObjectPtr<APhysicsVolume>,
     attach_parent: *const USceneComponent,
@@ -17,6 +15,8 @@ pub struct USceneComponent {
     client_attached_children: TArray<*const USceneComponent>,
     net_old_attach_parent: *const USceneComponent,
     bounds: FBoxSphereBounds,
+    // TODO: weird padding
+    _pad: [u8; 0x7c],
     pub relative_location: FVector, // 0x1a0 / 0x140
     relative_rotation: FRotator,
     relative_scale_3d: FVector,
@@ -77,9 +77,7 @@ mod tests {
     fn uscenecomponent_offsets() {
         unsafe {
             let scenecomponent: *const USceneComponent = ::std::ptr::null();
-            ptr_eq!(scenecomponent, base.owner_private, 0x0b0, "UActorComponent::owner_private");
-            ptr_eq!(scenecomponent, base.world_private, 0x0b8, "UActorComponent::world_private");
-            ptr_eq!(scenecomponent, relative_location, 0x1a0, "USceneComponent::relative_location");
+            ptr_eq!(scenecomponent, relative_location, 0x1a0);
         }
     }
 }

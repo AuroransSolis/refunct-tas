@@ -2,7 +2,7 @@ use native::ue::*;
 use native::movementcomponent::UMovementComponent;
 
 pub struct UNavMovementComponent {
-    base: UMovementComponent,
+    pub base: UMovementComponent,
     nav_agent_props: FNavAgentProperties,
     fixed_path_braking_distance: f32,
 //    b_update_nav_agent_with_owners_collsion: Bool32,

@@ -40,10 +40,6 @@ pub(in native) extern "C" fn save(this: usize) {
         let character: *const AMyCharacter = ::std::mem::transmute(this);
         assert_eq!(size_of::<UObjectBase<()>>(), 0x30, "UObjectBase");
         assert_eq!(size_of::<UObject<()>>(), 0x30, "UObject");
-        assert_eq!(size_of::<FTickFunction>(), 0x48, "FTickFunction");
-        assert_eq!(size_of::<FActorTickFunction>(), 0x50, "FActorTickFunction");
-        assert_eq!(size_of::<AActor<()>>(), 0x380, "AActor");
-        assert_eq!(size_of::<AInfo<()>>(), 0x388, "AInfo");
         assert_eq!(size_of::<APawn<()>>(), 0x3e8, "APawn");
         ptr_eq!(character, base.base.base.custom_time_dilation, 0x80, "Custom Time Dilation");
         ptr_eq!(character, base.base.base.input_component, 0x120, "Input Component");

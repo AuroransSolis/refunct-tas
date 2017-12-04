@@ -64,7 +64,7 @@ pub struct UWorld {
 
 impl UWorld {
     pub unsafe fn get_raw() -> *const UWorld {
-        native::GWORLD as *const UWorld
+        *(native::GWORLD as *const *const UWorld)
     }
 }
 

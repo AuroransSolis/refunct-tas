@@ -244,3 +244,17 @@ pub enum ETickState {
     Enabled,
     CoolingDown,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn size_of() {
+        use std::mem::size_of;
+        assert_eq!(size_of::<FTickFunction>(), 0x48, "FTickFunction");
+        assert_eq!(size_of::<FActorTickFunction>(), 0x50, "FActorTickFunction");
+        assert_eq!(size_of::<AActor<()>>(), 0x380, "AActor");
+        assert_eq!(size_of::<AInfo<()>>(), 0x388, "AInfo");
+    }
+}

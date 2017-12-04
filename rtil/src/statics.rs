@@ -1,6 +1,7 @@
 use std::sync::{Mutex, MutexGuard};
 use std::ops::{Deref, DerefMut};
 use std::fs::{File, OpenOptions};
+use std::sync::atomic::{AtomicBool, Ordering};
 
 macro_rules! log {
     () => {{
@@ -83,5 +84,60 @@ impl<'a, T> Deref for MutexGuardWrapper<'a, T> {
 impl<'a, T> DerefMut for MutexGuardWrapper<'a, T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.guard.as_mut().unwrap()
+    }
+}
+
+pub struct StaticUntyped {
+    locked: AtomicBool,
+}
+
+impl StaticUntyped {
+    pub const fn new() -> StaticUntyped {
+        StaticUntyped {
+            locked: AtomicBool::new(false),
+        }
+    }
+
+    pub fn lock<'a, T>(&'a self, t: T) -> StaticGuard<'a, T> {
+        let prev = self.locked.compare_and_swap(false, true, Ordering::Relaxed);
+        if prev != false {
+            panic!("StaticUntyped already locked");
+        }
+        StaticGuard {
+            t,
+            locked: &self.locked,
+        }
+    }
+}
+
+pub struct StaticGuard<'a, T> {
+    t: T,
+    locked: &'a AtomicBool,
+}
+
+impl<'a, T> Deref for StaticGuard<'a, T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.t
+    }
+}
+
+impl<'a, T> DerefMut for StaticGuard<'a, T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.t
+    }
+}
+
+impl<'a, T> Drop for StaticGuard<'a, T> {
+    fn drop(&mut self) {
+        let prev = self.locked.compare_and_swap(true, false, Ordering::Relaxed);
+        if prev != true {
+            if ::std::thread::panicking() {
+                log!("Drop StaticGuard with unlocked StaticUntyped while panicking");
+            } else {
+                panic!("Drop StaticGuard with unlocked StaticUntyped");
+            }
+        }
     }
 }

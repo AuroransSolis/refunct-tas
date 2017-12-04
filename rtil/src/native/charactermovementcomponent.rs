@@ -1,10 +1,13 @@
 use native::ue::*;
 use native::pawnmovementcomponent::UPawnMovementComponent;
 use native::character::ACharacter;
+use native::scenecomponent::USceneComponent;
+use native::character::FRootMotionSourceGroup;
+use native::actor::FTickFunction;
 
 pub struct UCharacterMovementComponent {
-    base: UPawnMovementComponent,
-    character_owner: *const ACharacter,
+    pub base: UPawnMovementComponent,
+    character_owner: *const ACharacter<()>,
 //    b_apply_gravity_while_jumping: Bool32,
     bitfield: Bool32,
     gravity_scale: f32,
@@ -164,11 +167,29 @@ pub struct UCharacterMovementComponent {
     current_root_motion: FRootMotionSourceGroup,
     // TArray<_, TInlineAllocator<(uint32)ERootMotionMapping::MapSize> > (mapsize = 16)
     root_motion_id_mappings: TArray<FRootMotionServerToLocalIdMapping>,
-    root_motion_params: FRootMotionParams,
+    root_motion_params: FRootMotionMovementParams,
     anim_root_motion_velocity: FVector,
     b_was_simulation_root_motion: bool,
 //    b_allow_physics_rotation_during_anim_root_motion: Bool32,
     bitfield6: Bool32,
+}
+
+impl UCharacterMovementComponent {
+    pub fn velocity(&self) -> FVector {
+        self.base.base.base.velocity
+    }
+
+    pub fn set_velocity(&mut self, velocity: FVector) {
+        self.base.base.base.velocity = velocity;
+    }
+
+    pub fn acceleration(&self) -> FVector {
+        self.acceleration
+    }
+
+    pub fn set_acceleration(&mut self, acceleration: FVector) {
+        self.acceleration = acceleration
+    }
 }
 
 #[repr(u8)]
@@ -177,4 +198,149 @@ pub enum ENetworkSmoothingMode {
     Linear,
     Exponential,
     Replay,
+}
+
+#[repr(C)]
+pub enum EMovementMode {
+    None,
+    Walking,
+    NavWalking,
+    Falling,
+    Swimming,
+    Flying,
+    Custom,
+    MAX,
+}
+
+#[repr(C)]
+pub struct FFindFloorResult {
+//    b_blocking_hit: Bool32,
+//    b_walkable_floor: Bool32,
+//    b_line_tracee: Bool32,
+    bitfield: Bool32,
+    floor_dist: f32,
+    line_dist: f32,
+    hit_result: FHitResult,
+}
+
+#[repr(C)]
+pub struct FNavAvoidanceMask {
+    // b_group{0..32}: Bool32,
+    bitfield: Bool32
+}
+
+#[repr(C)]
+pub struct FNavLocation {
+    location: FVector,
+    node_ref: NavNodeRef,
+}
+
+type NavNodeRef = u64;
+
+#[repr(C)]
+pub struct FHitResult {
+    normal: FVector4,
+    time: f32,
+    item: i32,
+}
+
+#[repr(C)]
+pub struct FCharacterMovementComponentPostPhysicsTickFunction {
+    base: FTickFunction,
+    target: *const UCharacterMovementComponent,
+}
+
+#[repr(C)]
+pub struct FNetworkPredictionData_Client_Character {
+    base: FNetworkPredictionData_Client,
+    client_update_time: f32,
+    current_time_stamp: f32,
+    saved_moves: TArray<FSavedMovePtr>,
+    free_moves: TArray<FSavedMovePtr>,
+    pending_pove: FSavedMovePtr,
+    last_acked_move: FSavedMovePtr,
+    max_free_move_count: i32,
+    max_saved_move_count: i32,
+    root_motion_movement: FRootMotionMovementParams,
+//    b_update_position: Bool32,
+//    b_smooth_net_updates: Bool32,
+    bitfield: Bool32,
+    original_mesh_translation_offset: FVector,
+    mesh_translation_offset: FVector,
+    original_mesh_rotation_offset: FQuat,
+    mesh_rotation_offset: FQuat,
+    mesh_rotation_target: FQuat,
+    last_correction_delta: f32,
+    last_correction_time: f32,
+    smoothing_server_time_stamp: f64,
+    smoothing_client_time_stamp: f64,
+    current_smooth_tume: f32,
+    b_use_linear_smoothing: bool,
+    max_smooth_net_update_dist: f32,
+    no_smooth_net_update_dist: f32,
+    smooth_net_update_time: f32,
+    smooth_net_update_rotation_time: f32,
+    max_response_time: f32,
+    max_move_delta_time: f32,
+    last_smooth_location: FVector,
+    last_server_location: FVector,
+    simulated_debug_draw_time: f32,
+    replay_samples: TArray<FCharacterReplaySample>,
+}
+
+#[repr(C)]
+pub struct FNetworkPredictionData_Server_Character {
+    base: FNetworkPredictionData_Server,
+    pending_adjustment: FClientAdjustment,
+    current_client_time_stamp: f32,
+    last_update_time: f32,
+    server_time_stamp_last_server_move: f32,
+    max_response_time: f32,
+    max_move_delta_time: f32,
+//    b_force_client_update: Bool32,
+    bitfield: Bool32,
+    lifetime_raw_time_discrepancy: f32,
+    time_discrepancy: f32,
+    b_resolving_time_discrepancy: bool,
+    time_discrepancy_resolution_move_delta_override: f32,
+    time_discrepancy_accumulated_client_deltas_since_last_server_tick: f32,
+    world_creation_time: f32,
+}
+
+type FSavedMovePtr = TSharedPtr<FSavedMove_Character>;
+
+#[repr(C)]
+pub struct FRootMotionServerToLocalIdMapping {
+    server_id: u16,
+    local_id: u16,
+    time_stamp: f32,
+}
+
+#[repr(C)]
+pub struct FRootMotionMovementParams {
+    b_has_root_motion: bool,
+    blend_weight: bool,
+    root_motion_transform: FTransform,
+}
+
+#[repr(C)]
+pub struct FNetworkPredictionData_Client;
+
+#[repr(C)]
+pub struct FNetworkPredictionData_Server {
+    server_time_stamp: f32
+}
+
+#[repr(C)]
+pub struct FClientAdjustment {
+    time_stamp: f32,
+    delta_time: f32,
+    new_loc: FVector,
+    new_vel: FVector,
+    new_rot: FRotator,
+    new_base: *const UPrimitiveComponent,
+    new_base_bone_name: FName,
+    b_ack_good_move: bool,
+    b_base_relative_position: bool,
+    movement_mode: u8,
 }

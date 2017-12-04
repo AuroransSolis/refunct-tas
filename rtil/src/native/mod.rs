@@ -1,4 +1,7 @@
 macro_rules! ptr_eq {
+    ($var:ident, $($field:ident).*, $cmp:expr) => {
+        assert_eq!(&(*$var).$($field).* as *const _ as usize - $var as usize, $cmp);
+    };
     ($var:ident, $($field:ident).*, $cmp:expr, $args:tt) => {
         assert_eq!(&(*$var).$($field).* as *const _ as usize - $var as usize, $cmp, $args);
     }
@@ -6,7 +9,7 @@ macro_rules! ptr_eq {
 
 #[cfg(unix)] #[macro_use] mod linux;
 #[cfg(windows)] #[macro_use] mod windows;
-mod ue;
+pub mod ue;
 mod character;
 mod controller;
 mod newgame;
@@ -46,5 +49,5 @@ pub fn init() {
     newgame::hook();
     tick::hook();
     controller::hook();
-    character::hook();
+//    character::hook();
 }
