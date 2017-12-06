@@ -1,10 +1,4 @@
 use native::ue::*;
-use native::AController;
-use native::gameinstance::UMyGameInstance;
-use native::gamestate::AGameState;
-use native::pawn::APawn;
-use native::level::ULevel;
-use native::actorcomponent::UActorComponent;
 use native;
 
 #[repr(C)]
@@ -46,7 +40,7 @@ pub struct UWorld {
     canvas_for_rendering_to_target: *const UCanvas, // 0x150
     canvas_for_draw_material_to_render_target: *const UCanvas, // 0x158
     scene: *const FScene, // 0x160
-    feature_level: ERHIFeatureLevelType, // 0x168
+    feature_level: ErhiFeatureLevelType, // 0x168
     // padding 0x04
     controller_list: TArray<TWeakObjectPtr<AController>>, // 0x170
     player_controller_list: TArray<TWeakObjectPtr<APlayerController>>, // 0x180
@@ -72,18 +66,6 @@ impl UWorld {
 struct FWorldAsyncTraceState {
     data_buffer: [AsyncTraceData; 2],
     current_frame: i32,
-}
-
-type FGraphEventArray = TArray<FGraphEventRef>;
-
-#[repr(C)]
-struct AsyncTraceData {
-    trace_data: TArray<TUniquePtr<TTraceThreadData<FTraceDatum>>>,
-    overlap_data: TArray<TUniquePtr<TTraceThreadData<FOverlapDatum>>>,
-    num_queued_trace_data: i32,
-    num_queued_overlap_data: i32,
-    b_async_allowed: bool,
-    async_trace_completion_event: FGraphEventArray,
 }
 
 #[cfg(test)]

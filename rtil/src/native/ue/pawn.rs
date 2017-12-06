@@ -1,6 +1,4 @@
 use native::ue::*;
-use native::actor::{AActor, EAutoReceiveInputType};
-use native::controller::AController;
 
 #[repr(C)]
 pub struct APawn<B> {
@@ -27,11 +25,3 @@ pub struct APawn<B> {
     control_input_vector: FVector, // 0x3d0
     last_control_input_vector: FVector, // 0x3dc
 } // 0x3e8
-
-#[repr(u8)]
-pub enum EAutoPossessAi {
-    Disabled,
-    PlacedInWorld,
-    Spawned,
-    PlacedInWorldOrSpawned,
-}

@@ -1,6 +1,4 @@
 use native::ue::*;
-use native::player::ULocalPlayer;
-use native::actor::AActor;
 
 #[repr(C, packed)]
 pub struct UMyGameInstance {

@@ -1,7 +1,4 @@
 use native::ue::*;
-use native::pawn::APawn;
-use native::scenecomponent::USceneComponent;
-use native::actorcomponent::UActorComponent;
 
 #[repr(C)]
 pub struct AActor<B> {
@@ -106,143 +103,11 @@ pub struct AActor<B> {
     _pad2: [u8; 0xb0],
 } // 0x380
 
-#[repr(C)]
-pub struct AInfo<B> {
-    base: AActor<B>,
-    sprite_component: *const UBillboardComponent,
-} // 0x388
-
-#[repr(C)]
-pub enum ENetRole {
-    None,
-    SimulatedProxy,
-    AutonomousProxy,
-    Authority,
-    Max,
-}
-
-#[repr(C)]
-pub struct FRepMovement {
-    linear_velocity: FVector,
-    angular_velocity: FVector,
-    location: FVector,
-    rotation: FRotator,
-//    b_simulated_physics_sleep: Bool8,
-//    b_rep_physics: Bool8,
-    bitfield: Bool8,
-    location_quantization_level: EVectorQuantization,
-    velocity_quantization_level: EVectorQuantization,
-    rotation_quantization_level: EVectorQuantization,
-}
-
-#[repr(C)]
-pub struct FRepAttachment {
-    attach_parent: *const AActor<()>,
-    location_offset: FVector_NetQuantize100,
-    relative_scale_3d: FVector_NetQuantize100,
-    rotation_offset: FRotator,
-    attach_socket: FName,
-    attach_component: *const USceneComponent,
-}
-
-#[repr(u8)]
-pub enum EVectorQuantization {
-    RoundWholeNumber,
-    RoundOneDecimal,
-    RoundTwoDecimals,
-}
-
-#[repr(C)]
-pub enum ENetDormancy {
-    Never,
-    Awake,
-    DormantAll,
-    DormantPartial,
-    Initial,
-    Max,
-}
-
-#[repr(C)]
-pub enum EAutoReceiveInputType {
-    Disabled,
-    Player0,
-    Player1,
-    Player2,
-    Player3,
-    Player4,
-    Player5,
-    Player6,
-    Player7,
-}
-
 #[repr(u8)]
 pub enum EActorBeginPlayState {
     HasNotBegunPlay,
     BeginningPlay,
     HasBegunPlay,
-}
-
-#[repr(u8)]
-pub enum ESpawnActorCollisionHandlingMethod {
-    Undefined,
-    AlwaysSpawn,
-    AdjustIfPossibleButAlwaysSpawn,
-    AdjustIfPossibleButDontSpawnIfColliding,
-    DontSpawnIfColliding,
-}
-
-#[repr(C)]
-pub struct FTickFunction {
-    tick_group: TEnumAsByte<ETickingGroup>,
-    end_tick_group: TEnumAsByte<ETickingGroup>,
-    actual_start_tick_group: TEnumAsByte<ETickingGroup>,
-    actual_end_tick_group: TEnumAsByte<ETickingGroup>,
-//    b_tick_even_when_paused: Bool8,
-//    b_can_ever_tick: Bool8,
-//    b_start_with_tick_enabled: Bool8,
-//    b_allow_tick_on_dedicated_server: Bool8,
-//    b_high_priority: Bool8,
-//    b_run_on_any_thread: Bool8,
-    bitfield: Bool8,
-    b_registered: bool,
-    b_was_interval: bool,
-    tick_state: ETickState,
-    tick_visited_g_frame_counter: i32,
-    tick_queued_g_frame_counter: i32,
-
-    task_pointer: *const (), // 0x10
-    prerequisites: TArray<FTickPrerequisite>, // 0x018
-    next: *const FTickFunction, // 0x028
-    relative_tick_cooldown: f32, // 0x030
-    last_tick_game_time_seconds: f32, // 0x034
-    tick_interval: f32, // 0x038
-    tick_task_level: *const FTickTaskLevel, // 0x040
-} // 0x048
-
-#[repr(C)]
-pub struct FActorTickFunction {
-    base: FTickFunction, // 0x000
-    target: *const AActor<()>, // 0x48
-} // 0x050
-
-#[repr(C)]
-pub enum ETickingGroup {
-    PrePhysics,
-    StartPhysics,
-    DuringPhysics,
-    EndPhysics,
-    PostPhysics,
-    PostUpdateWork,
-    LastDemotable,
-    NewlySpawned,
-    Max,
-}
-
-#[repr(u8)]
-pub enum ETickState {
-    Disabled,
-    Enabled,
-    CoolingDown,
 }
 
 #[cfg(test)]
@@ -252,9 +117,6 @@ mod tests {
     #[test]
     fn size_of() {
         use std::mem::size_of;
-        assert_eq!(size_of::<FTickFunction>(), 0x48, "FTickFunction");
-        assert_eq!(size_of::<FActorTickFunction>(), 0x50, "FActorTickFunction");
-        assert_eq!(size_of::<AActor<()>>(), 0x380, "AActor");
-        assert_eq!(size_of::<AInfo<()>>(), 0x388, "AInfo");
+        assert_eq!(size_of::<AActor<()>>(), 0x380);
     }
 }

@@ -1,8 +1,7 @@
 use native::ue::*;
-use native::actorcomponent::UActorComponent;
 
-type FPhysicsVolumeChanged = *const ();
-type FTransformUpdated = *const ();
+pub type FPhysicsVolumeChanged = *const ();
+pub type FTransformUpdated = *const ();
 
 #[repr(C)]
 pub struct USceneComponent {
@@ -47,13 +46,6 @@ pub struct USceneComponent {
     transform_updated: FTransformUpdated,
 }
 
-#[repr(C)]
-pub enum EComponentMobilityType {
-    Static,
-    Stationary,
-    Movable,
-}
-
 #[repr(u8)]
 pub enum EVisibilityPropagation {
     NoPropagation,
@@ -67,6 +59,15 @@ pub enum EDetailMode {
     DmMedium,
     DmHigh,
     DmMax,
+}
+
+#[repr(C)]
+pub enum EMoveComponentFlags {
+    MovecompNoFlags,
+    MovecompIgnoreBases,
+    MovecompSkipPhysicsMove,
+    MovecompNeverIgnoreBlockingOverlaps,
+    MovecompDisableBlockingOverlapDispatch,
 }
 
 #[cfg(test)]

@@ -2,15 +2,7 @@ use std::cell::RefCell;
 
 use statics::{StaticGuard, StaticUntyped};
 use native::ue::*;
-use native::pawn::APawn;
-use native::level::ULevel;
-use native::charactermovementcomponent::UCharacterMovementComponent;
-use native::scenecomponent::USceneComponent;
-
 use native::AMYCHARACTER_TICK;
-use native::ue::FVector;
-//#[cfg(unix)] use native::linux::character::save;
-#[cfg(windows)] use native::windows::character::save;
 
 #[repr(C)]
 pub struct ACharacter<B> {
@@ -72,30 +64,6 @@ pub struct FBasedMovementInfo {
     b_relative_rotation: bool,
     b_server_has_velocity: bool,
     // END
-}
-
-#[repr(C)]
-pub struct FRootMotionSourceGroup {
-    root_motion_sources: TArray<TSharedPtr<FRootMotionSource>>,
-    pending_add_root_moution_sources: TArray<TSharedPtr<FRootMotionSource>>,
-    b_has_additive_sources: bool,
-    b_has_override_sources: bool,
-    last_pre_additive_velocity: FVector_NetQuantize10,
-    b_is_additive_velocity_applied: bool,
-    last_accumulated_settings: FRootMotionSourceSettings,
-}
-
-#[repr(C)]
-pub struct FRootMotionSourceSettings {
-    flags: u8,
-}
-
-#[repr(C)]
-pub struct FRootMotionMovementParams {
-    root_motion_scale: FVector,
-    b_has_root_motion: bool,
-    blend_weight: f32,
-    root_motion_transform: FTransform,
 }
 
 #[repr(C)]
@@ -199,20 +167,3 @@ mod tests {
         }
     }
 }
-
-//hook! {
-//    "AMyCharacter::Tick",
-//    AMYCHARACTER_TICK,
-//    hook,
-//    unhook,
-//    get,
-//    true,
-//}
-//
-//hook_fn_once! {
-//    get,
-//    save,
-//    unhook,
-//    AMYCHARACTER_TICK,
-//}
-

@@ -1,9 +1,4 @@
 use native::ue::*;
-use native::pawnmovementcomponent::UPawnMovementComponent;
-use native::character::ACharacter;
-use native::scenecomponent::USceneComponent;
-use native::character::FRootMotionSourceGroup;
-use native::actor::FTickFunction;
 
 pub struct UCharacterMovementComponent {
     pub base: UPawnMovementComponent,
@@ -192,26 +187,6 @@ impl UCharacterMovementComponent {
     }
 }
 
-#[repr(u8)]
-pub enum ENetworkSmoothingMode {
-    Disabled,
-    Linear,
-    Exponential,
-    Replay,
-}
-
-#[repr(C)]
-pub enum EMovementMode {
-    None,
-    Walking,
-    NavWalking,
-    Falling,
-    Swimming,
-    Flying,
-    Custom,
-    MAX,
-}
-
 #[repr(C)]
 pub struct FFindFloorResult {
 //    b_blocking_hit: Bool32,
@@ -221,27 +196,6 @@ pub struct FFindFloorResult {
     floor_dist: f32,
     line_dist: f32,
     hit_result: FHitResult,
-}
-
-#[repr(C)]
-pub struct FNavAvoidanceMask {
-    // b_group{0..32}: Bool32,
-    bitfield: Bool32
-}
-
-#[repr(C)]
-pub struct FNavLocation {
-    location: FVector,
-    node_ref: NavNodeRef,
-}
-
-type NavNodeRef = u64;
-
-#[repr(C)]
-pub struct FHitResult {
-    normal: FVector4,
-    time: f32,
-    item: i32,
 }
 
 #[repr(C)]
@@ -307,29 +261,7 @@ pub struct FNetworkPredictionData_Server_Character {
     world_creation_time: f32,
 }
 
-type FSavedMovePtr = TSharedPtr<FSavedMove_Character>;
-
-#[repr(C)]
-pub struct FRootMotionServerToLocalIdMapping {
-    server_id: u16,
-    local_id: u16,
-    time_stamp: f32,
-}
-
-#[repr(C)]
-pub struct FRootMotionMovementParams {
-    b_has_root_motion: bool,
-    blend_weight: bool,
-    root_motion_transform: FTransform,
-}
-
-#[repr(C)]
-pub struct FNetworkPredictionData_Client;
-
-#[repr(C)]
-pub struct FNetworkPredictionData_Server {
-    server_time_stamp: f32
-}
+pub type FSavedMovePtr = TSharedPtr<FSavedMove_Character>;
 
 #[repr(C)]
 pub struct FClientAdjustment {

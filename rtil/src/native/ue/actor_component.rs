@@ -1,10 +1,7 @@
 use native::ue::*;
-use native::world::UWorld;
-use native::actor::AActor;
-use native::actor::FTickFunction;
 
-type FActorComponentActivateSignature = *const ();
-type FActorComponentDeactivateSignature = *const ();
+pub type FActorComponentActivateSignature = *const ();
+pub type FActorComponentDeactivateSignature = *const ();
 
 #[repr(C)]
 pub struct UActorComponent<B> {
@@ -55,12 +52,6 @@ pub struct UActorComponent<B> {
     pub world_private: *const UWorld, // 0x0b8
 } // 0x0c0
 
-#[repr(C)]
-pub struct FActorComponentTickFunction {
-    base: FTickFunction, // 0x000
-    target: *const UActorComponent<()>, // 0x048
-} // 0x050
-
 #[repr(u8)]
 pub enum EComponentCreationMethod {
     Native,
@@ -85,7 +76,6 @@ mod tests {
     #[test]
     fn actorcomponent_size() {
         use std::mem::size_of;
-        assert_eq!(size_of::<FActorComponentTickFunction>(), 0x050);
         assert_eq!(size_of::<UActorComponent<()>>(), 0x0c0);
     }
 }

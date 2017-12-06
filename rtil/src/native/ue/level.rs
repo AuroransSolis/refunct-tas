@@ -1,6 +1,4 @@
 use native::ue::*;
-use native::actor::AActor;
-use native::world::UWorld;
 
 pub type FLevelTransformEvent = *const ();
 pub type FLevelBoundsActorUpdateEvent = *const ();
@@ -109,8 +107,3 @@ pub struct FPrecomputedVolumeDistanceField {
     volume_size_z: i32, // 0x028
     data: TArray<FColor>, // 0x030
 } // 0x040
-
-#[repr(C)]
-pub struct FRenderCommandFence {
-    completion_event: FGraphEventRef, // 0x000
-} // 0x008

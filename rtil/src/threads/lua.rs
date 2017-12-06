@@ -7,8 +7,8 @@ use std::collections::HashSet;
 use lua::{Lua, LuaInterface, Response, Event};
 
 use threads::{StreamToLua, LuaToStream, LuaToUe, UeToLua, Config};
-use native::{AMyCharacter, AController, FApp};
-use native::ue::FVector;
+use native::FApp;
+use native::ue::{FVector, AMyCharacter, AController};
 
 struct Tas<'lua> {
     iface: Rc<RefCell<GameInterface>>,

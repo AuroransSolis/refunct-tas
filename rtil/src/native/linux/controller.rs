@@ -1,4 +1,5 @@
-use native::controller::{CONTROLLER, AController};
+use native::controller::CONTROLLER;
+use native::ue::AController;
 
 impl AController {
     pub(in native) unsafe fn pitch_ptr() -> *mut f32 {

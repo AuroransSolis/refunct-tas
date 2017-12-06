@@ -1,6 +1,4 @@
 use native::ue::*;
-use native::actor::AInfo;
-use native::level::ULevel;
 
 #[repr(C)]
 pub struct AGameStateBase<B> {
@@ -16,11 +14,3 @@ pub struct AGameStateBase<B> {
     timer_handle_update_server_time_seconds: FTimerHandle, // 0x3c0
 } // 0x3c8
 
-#[repr(C)]
-pub struct AGameState {
-    base: AGameStateBase<ULevel>, // 0x000
-    match_state: FName, // 0x3c8
-    previous_match_state: FName, // 0x3d0
-    elapsed_time: i32, // 0x3d8
-    timer_handle_default_timer: FTimerHandle, // 0x3e0
-} // apparently 0x570

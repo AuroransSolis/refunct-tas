@@ -1,6 +1,4 @@
 use native::ue::*;
-use native::actorcomponent::UActorComponent;
-use native::scenecomponent::USceneComponent;
 
 pub struct UMovementComponent {
     base: UActorComponent<()>,
@@ -21,15 +19,6 @@ pub struct UMovementComponent {
     bitfield2: Bool32,
     b_in_on_register: bool,
     b_in_initialize_component: bool,
-}
-
-#[repr(C)]
-enum EMoveComponentFlags {
-    MovecompNoFlags,
-    MovecompIgnoreBases,
-    MovecompSkipPhysicsMove,
-    MovecompNeverIgnoreBlockingOverlaps,
-    MovecompDisableBlockingOverlapDispatch,
 }
 
 #[repr(u8)]
